@@ -29,3 +29,6 @@ export {
   ProfileLookupParamSchema,
   ProfileLookupQuerySchema,
 } from './sessionserver.js';
+
+export type { TexturesLookupResponse } from './textures-api.js';
+export { TexturesLookupResponseSchema } from './textures-api.js';

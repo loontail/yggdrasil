@@ -89,3 +89,38 @@ export const encodeTexturesPayloadBase64 = (payload: TexturesPayload): string =>
   for (const byte of bytes) binary += String.fromCharCode(byte);
   return globalThis.btoa(binary);
 };
+
+/**
+ * Reverse of {@link encodeTexturesPayloadBase64}. Decodes the
+ * `properties[0].value` base64 string back into the JSON
+ * {@link TexturesPayload}. Throws {@link YggdrasilCoreError} with
+ * `invalid_textures_input` on a malformed input.
+ */
+export const decodeTexturesPayloadBase64 = (encoded: string): TexturesPayload => {
+  let json: string;
+  try {
+    if (typeof Buffer !== 'undefined') {
+      json = Buffer.from(encoded, 'base64').toString('utf8');
+    } else {
+      const binary = globalThis.atob(encoded);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      json = new TextDecoder().decode(bytes);
+    }
+  } catch (err) {
+    throw new YggdrasilCoreError(
+      YggdrasilCoreErrorCodes.INVALID_TEXTURES_INPUT,
+      'textures payload is not valid base64',
+      { cause: err },
+    );
+  }
+  try {
+    return JSON.parse(json) as TexturesPayload;
+  } catch (err) {
+    throw new YggdrasilCoreError(
+      YggdrasilCoreErrorCodes.INVALID_TEXTURES_INPUT,
+      'textures payload is not valid JSON',
+      { cause: err },
+    );
+  }
+};

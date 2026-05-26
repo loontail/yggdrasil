@@ -8,6 +8,10 @@ export {
 } from './png.js';
 
 export type { BuildTexturesPayloadInput } from './textures-payload.js';
-export { buildTexturesPayload, encodeTexturesPayloadBase64 } from './textures-payload.js';
+export {
+  buildTexturesPayload,
+  decodeTexturesPayloadBase64,
+  encodeTexturesPayloadBase64,
+} from './textures-payload.js';
 
 export { dashUuid, isUuidDashed, isUuidUndashed, randomUndashedUuid, undashUuid } from './uuid.js';
