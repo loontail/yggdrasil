@@ -1,0 +1,71 @@
+{
+  "plugin.name": "Yggdrasil",
+
+  "nav.textures": "Textures",
+  "nav.sessions": "Sessions",
+
+  "textures.page.title": "Player Textures",
+  "textures.page.subtitle": "{skinsTotal} skins · {capesTotal} capes",
+
+  "sessions.empty.title": "Sessions",
+  "sessions.empty.description": "Coming soon: live join sessions, recent player activity, and server-side analytics.",
+
+  "tab.skins": "Skins",
+  "tab.capes": "Capes",
+
+  "type.skin": "Skin",
+  "type.cape": "Cape",
+
+  "button.refresh": "Refresh",
+  "button.upload": "Upload",
+  "button.close": "Close",
+  "button.cancel": "Cancel",
+  "button.delete": "Delete",
+  "button.confirmDelete": "Confirm delete",
+  "button.prev": "Prev",
+  "button.next": "Next",
+  "button.validate": "Validate",
+  "button.deleteMissing": "Delete missing ({count})",
+
+  "search.placeholder": "Search by username…",
+  "search.label.skins": "Searching for skin",
+  "search.label.capes": "Searching for cape",
+  "search.clear.skins": "Clear skin search",
+  "search.clear.capes": "Clear cape search",
+
+  "state.loading": "Loading…",
+
+  "empty.skins": "No skins found",
+  "empty.capes": "No capes found",
+
+  "field.username": "Username",
+  "field.userId": "User ID",
+  "field.type": "Type",
+  "field.fileSize": "File size",
+  "field.fileUrl": "File URL",
+
+  "card.userFallback": "User #{userId}",
+
+  "upload.title": "Upload player assets",
+  "upload.field.playerId": "Player ID",
+  "upload.field.playerIdPlaceholder": "e.g. 12345",
+  "upload.field.usernamePlaceholder": "e.g. Steve",
+  "upload.label.optional": "(optional)",
+  "upload.skin.hint": "64×64 PNG",
+  "upload.cape.hint": "64×32 PNG",
+  "upload.dropzone.title": "Drop PNG here",
+  "upload.dropzone.subtitle": "or click to browse",
+  "upload.dropzone.replace": "click to replace",
+  "upload.preview": "Preview",
+
+  "error.skin.notPng": "Skin must be a PNG",
+  "error.cape.notPng": "Cape must be a PNG",
+  "error.playerId.required": "Player ID is required",
+  "error.assets.required": "Select at least a skin or a cape",
+  "error.upload.failed": "Upload failed",
+
+  "validate.badge": "missing",
+  "validate.toast.ok": "All files present — no issues found.",
+  "validate.toast.missing": "{count, plural, one {# entry is missing} other {# entries are missing}} from disk.",
+  "purge.toast.success": "Deleted {deletedSkins} skins and {deletedCapes} capes from database."
+}
