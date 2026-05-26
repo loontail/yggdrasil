@@ -1,11 +1,16 @@
 import {
   type GameProfile,
   GameProfileSchema,
+  type SkinVariant,
+  SkinVariants,
+  type TexturesLookupResponse,
+  TexturesLookupResponseSchema,
   YggdrasilEndpoints,
   type YggdrasilMeta,
   YggdrasilMetaSchema,
   type YggdrasilSession,
   YggdrasilSessionSchema,
+  assertPngBuffer,
   undashUuid,
 } from '@loontail/yggdrasil-core';
 import { z } from 'zod';
@@ -14,7 +19,7 @@ import {
   YggdrasilClientErrorCodes,
   isYggdrasilClientErrorCode,
 } from './errors/yggdrasil-client-error.js';
-import { type Fetcher, getJson, postJson } from './http.js';
+import { type Fetcher, deleteWithAuth, getJson, postJson, putMultipart } from './http.js';
 
 export type YggdrasilClientOptions = {
   /** The Yggdrasil API root, e.g. `https://my.example.com/api/yggdrasil`. */
@@ -37,19 +42,20 @@ const GameProfileArraySchema = z.array(GameProfileSchema);
 const HTTP_FORBIDDEN = 403;
 
 /**
- * HTTP client for a Yggdrasil-compatible authentication server.
+ * HTTP client for a Yggdrasil-compatible authentication server with
+ * Loontail's profile-textures extensions.
  *
- * The client is read-only with respect to skins/capes — texture
- * uploads and deletions live outside the Yggdrasil protocol (in this
- * stack, in the `skins-registry` plugin). The methods exposed here
- * cover authentication, session tokens, profile lookups, and the
- * root metadata endpoint.
+ * Covers protocol endpoints (authenticate, refresh, validate,
+ * invalidate, profile lookups, root metadata) plus the
+ * Loontail-specific texture management routes (`PUT/DELETE
+ * /textures/skin|cape`, `GET /textures/:uuid`) that replaced the
+ * standalone `skins-registry` Strapi plugin.
  *
  * @example
  * ```ts
  * const client = new YggdrasilClient({ apiRoot: 'https://my/api/yggdrasil' });
  * const session = await client.authenticate({ username: 'a@b', password: 'p' });
- * await client.validate({ accessToken: session.accessToken, clientToken: session.clientToken });
+ * await client.uploadSkin({ accessToken: session.accessToken, file: pngBuffer, variant: 'CLASSIC' });
  * ```
  */
 export class YggdrasilClient {
@@ -181,6 +187,80 @@ export class YggdrasilClient {
       fetcher: this.fetcher,
       url: this.url(YggdrasilEndpoints.root),
       responseSchema: YggdrasilMetaSchema,
+    });
+  }
+
+  /**
+   * Fetch the public skin/cape URLs for `uuid`. Returns `null`
+   * entries when the player has not uploaded the corresponding
+   * asset. This is the convenience endpoint — Yggdrasil-compliant
+   * clients should usually go through {@link profile} and decode the
+   * textures property instead.
+   */
+  async getTextures(uuid: string): Promise<TexturesLookupResponse> {
+    const undashed = undashUuid(uuid);
+    return getJson({
+      fetcher: this.fetcher,
+      url: `${this.url(YggdrasilEndpoints.textures)}/${undashed}`,
+      responseSchema: TexturesLookupResponseSchema,
+    });
+  }
+
+  /**
+   * Upload (or replace) the caller's skin. The server identifies the
+   * owner from `accessToken`; there is no userId in the URL. The PNG
+   * is validated client-side via {@link assertPngBuffer} before the
+   * request goes out, so a malformed file fails locally with an
+   * actionable {@link YggdrasilCoreError(invalid_png)}.
+   */
+  async uploadSkin(input: {
+    accessToken: string;
+    file: Uint8Array | ArrayBuffer;
+    variant?: SkinVariant;
+  }): Promise<void> {
+    assertPngBuffer(input.file, 'skin');
+    await putMultipart({
+      fetcher: this.fetcher,
+      url: this.url(YggdrasilEndpoints.texturesSkin),
+      accessToken: input.accessToken,
+      file: input.file,
+      fields: { variant: input.variant ?? SkinVariants.CLASSIC },
+      responseSchema: null,
+    });
+  }
+
+  /** Upload (or replace) the caller's cape. See {@link uploadSkin}. */
+  async uploadCape(input: {
+    accessToken: string;
+    file: Uint8Array | ArrayBuffer;
+  }): Promise<void> {
+    assertPngBuffer(input.file, 'cape');
+    await putMultipart({
+      fetcher: this.fetcher,
+      url: this.url(YggdrasilEndpoints.texturesCape),
+      accessToken: input.accessToken,
+      file: input.file,
+      responseSchema: null,
+    });
+  }
+
+  /** Delete the caller's skin. 204 on success or already-empty. */
+  async deleteSkin(input: { accessToken: string }): Promise<void> {
+    await deleteWithAuth({
+      fetcher: this.fetcher,
+      url: this.url(YggdrasilEndpoints.texturesSkin),
+      accessToken: input.accessToken,
+      responseSchema: null,
+    });
+  }
+
+  /** Delete the caller's cape. 204 on success or already-empty. */
+  async deleteCape(input: { accessToken: string }): Promise<void> {
+    await deleteWithAuth({
+      fetcher: this.fetcher,
+      url: this.url(YggdrasilEndpoints.texturesCape),
+      accessToken: input.accessToken,
+      responseSchema: null,
     });
   }
 

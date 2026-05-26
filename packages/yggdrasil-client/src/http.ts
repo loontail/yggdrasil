@@ -61,6 +61,57 @@ export const getJson = async <S extends ZodTypeAny>(opts: {
   return handleResponse(response, opts.url, opts.responseSchema);
 };
 
+/**
+ * Build `multipart/form-data` with a single `file` field and run a PUT
+ * with the supplied bearer token. Used for skin/cape uploads.
+ *
+ * NB: do not set Content-Type manually — fetch picks the multipart
+ * boundary string automatically when it sees a FormData body.
+ */
+export const putMultipart = async <S extends ZodTypeAny | null>(opts: {
+  fetcher: Fetcher;
+  url: string;
+  accessToken: string;
+  file: Uint8Array | ArrayBuffer;
+  /** Extra text fields. Values are serialized via `String(value)`. */
+  fields?: Readonly<Record<string, string>>;
+  responseSchema: S;
+}): Promise<S extends ZodTypeAny ? z.infer<S> : void> => {
+  const form = new FormData();
+  const view = opts.file instanceof Uint8Array ? opts.file : new Uint8Array(opts.file);
+  // Slice to a plain ArrayBuffer so the Blob constructor is happy in
+  // both Node (undici) and the browser.
+  const blob = new Blob([view.slice().buffer], { type: 'image/png' });
+  form.append('file', blob, 'asset.png');
+  if (opts.fields) {
+    for (const [k, v] of Object.entries(opts.fields)) form.append(k, v);
+  }
+  const response = await runFetch(opts.url, () =>
+    opts.fetcher(opts.url, {
+      method: 'PUT',
+      headers: { accept: 'application/json', authorization: `Bearer ${opts.accessToken}` },
+      body: form,
+    }),
+  );
+  return handleResponse(response, opts.url, opts.responseSchema);
+};
+
+/** Bearer-authenticated DELETE with no body. */
+export const deleteWithAuth = async <S extends ZodTypeAny | null>(opts: {
+  fetcher: Fetcher;
+  url: string;
+  accessToken: string;
+  responseSchema: S;
+}): Promise<S extends ZodTypeAny ? z.infer<S> : void> => {
+  const response = await runFetch(opts.url, () =>
+    opts.fetcher(opts.url, {
+      method: 'DELETE',
+      headers: { accept: 'application/json', authorization: `Bearer ${opts.accessToken}` },
+    }),
+  );
+  return handleResponse(response, opts.url, opts.responseSchema);
+};
+
 const handleResponse = async <S extends ZodTypeAny | null>(
   response: Response,
   url: string,

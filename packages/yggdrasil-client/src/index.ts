@@ -28,7 +28,15 @@ export type {
   GameProfileProperty,
   PlayerUuid,
   ServerId,
+  SkinVariant,
+  TexturesLookupResponse,
+  TexturesPayload,
   YggdrasilMeta,
   YggdrasilSession,
   YggdrasilUser,
+} from '@loontail/yggdrasil-core';
+export {
+  decodeTexturesPayloadBase64,
+  SkinVariants,
+  TextureKinds,
 } from '@loontail/yggdrasil-core';
