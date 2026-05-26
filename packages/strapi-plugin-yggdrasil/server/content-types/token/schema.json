@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "yggdrasil_tokens",
+  "info": {
+    "singularName": "token",
+    "pluralName": "tokens",
+    "displayName": "Yggdrasil Token",
+    "description": "Issued Yggdrasil access tokens"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "content-manager": { "visible": false },
+    "content-type-builder": { "visible": false }
+  },
+  "attributes": {
+    "userId": {
+      "type": "integer",
+      "required": true
+    },
+    "accessToken": {
+      "type": "string",
+      "required": true,
+      "maxLength": 64,
+      "unique": true
+    },
+    "clientToken": {
+      "type": "string",
+      "required": true,
+      "maxLength": 64
+    },
+    "issuedAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "expiresAt": {
+      "type": "datetime",
+      "required": true
+    }
+  }
+}

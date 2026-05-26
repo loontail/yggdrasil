@@ -1,0 +1,64 @@
+{
+  "name": "@loontail/strapi-plugin-yggdrasil",
+  "version": "0.0.1",
+  "description": "Strapi v5 plugin that exposes a Yggdrasil-compatible Minecraft authentication and session API on top of users-permissions and skins-registry.",
+  "license": "MIT",
+  "author": {
+    "name": "Loontail",
+    "email": "estluced@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loontail/loontail-yggdrasil.git",
+    "directory": "packages/strapi-plugin-yggdrasil"
+  },
+  "type": "commonjs",
+  "main": "./loader.js",
+  "types": "./dist/server/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/server/index.d.ts",
+      "require": "./loader.js",
+      "default": "./loader.js"
+    },
+    "./package.json": "./package.json",
+    "./strapi-server": {
+      "types": "./dist/server/index.d.ts",
+      "require": "./loader.js",
+      "default": "./loader.js"
+    }
+  },
+  "files": ["dist", "loader.cjs"],
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check ."
+  },
+  "strapi": {
+    "name": "yggdrasil",
+    "displayName": "Yggdrasil Auth",
+    "description": "Custom Yggdrasil-compatible auth and session server for Minecraft, integrated with users-permissions and skins-registry.",
+    "kind": "plugin"
+  },
+  "dependencies": {
+    "@loontail/yggdrasil-core": "^0.0.1",
+    "@loontail/minecraft-kit": "^0.8.9"
+  },
+  "peerDependencies": {
+    "@strapi/strapi": "^5.0.0",
+    "@strapi/plugin-users-permissions": "^5.0.0"
+  },
+  "devDependencies": {
+    "@strapi/strapi": "^5.44.0",
+    "@strapi/plugin-users-permissions": "^5.44.0",
+    "@types/koa": "^2.15.0",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
