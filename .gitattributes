@@ -1,0 +1,24 @@
+# Force LF on every text file regardless of OS. Without this, Windows clones
+# (and Windows CI runners) check out CRLF, which trips Biome's formatter and
+# any other tool that expects POSIX line endings.
+* text=auto eol=lf
+
+# Binary files: leave alone, never normalize.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.zip   binary
+*.jar   binary
+*.lzma  binary
+*.woff  binary
+*.woff2 binary
+
+# npm lockfile must round-trip verbatim — keep as LF (already covered by the
+# wildcard above, listed explicitly so future tooling doesn't second-guess it).
+package-lock.json text eol=lf
+
+# Husky hooks are shell scripts; even on Windows they must stay LF for the
+# git-managed hook runner to source them correctly.
+.husky/* text eol=lf
