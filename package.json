@@ -1,0 +1,38 @@
+{
+  "name": "loontail-yggdrasil",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Custom Yggdrasil-compatible auth server for Minecraft, packaged as a Strapi plugin and a TypeScript client.",
+  "license": "MIT",
+  "author": {
+    "name": "Loontail",
+    "email": "estluced@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loontail/loontail-yggdrasil.git"
+  },
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "test": "turbo run test",
+    "verify": "turbo run lint typecheck test build",
+    "changeset": "changeset",
+    "release": "turbo run build && changeset publish"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.27.10",
+    "turbo": "^2.3.3",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "packageManager": "npm@11.6.1"
+}
