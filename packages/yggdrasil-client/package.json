@@ -1,7 +1,7 @@
 {
   "name": "@loontail/yggdrasil-client",
   "version": "0.0.1",
-  "description": "TypeScript HTTP client for Yggdrasil-compatible auth servers, bundled with the authlib-injector jar and a -javaagent argument builder.",
+  "description": "TypeScript launcher client for Loontail Minecraft Auth: Yggdrasil protocol calls (authenticate/refresh/validate/profile) plus skin/cape upload, delete, and lookup. Ships the authlib-injector jar and a -javaagent argument builder.",
   "license": "MIT",
   "author": {
     "name": "Loontail",

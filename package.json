@@ -2,7 +2,7 @@
   "name": "loontail-yggdrasil",
   "private": true,
   "version": "0.0.0",
-  "description": "Custom Yggdrasil-compatible auth server for Minecraft, packaged as a Strapi plugin and a TypeScript client.",
+  "description": "Loontail Minecraft Auth — Yggdrasil-compatible authentication, session and player profile (skin/cape) server packaged as a Strapi v5 plugin plus a TypeScript launcher client.",
   "license": "MIT",
   "author": {
     "name": "Loontail",

@@ -1,28 +1,36 @@
-# Loontail Yggdrasil
+# Loontail Minecraft Auth
 
-A custom Yggdrasil-compatible authentication server for Minecraft,
-packaged as a Strapi v5 plugin and a TypeScript client.
+Self-hosted Minecraft authentication and player profile server.
+Implements the Yggdrasil protocol (so the vanilla client can play in
+online mode against a private server via `authlib-injector`) and
+owns the player's profile assets — skins, capes — through a single
+Strapi v5 plugin.
 
-It lets players log in through a custom launcher, distributes custom
-skins to other players in-game (via `authlib-injector`), and keeps a
-single source of truth in the existing Strapi `up_users` table.
+A custom launcher signs in against the server, plays online, uploads
+and replaces its skin / cape, all using one access token. The same
+plugin powers the admin UI for ops to browse and manage uploaded
+textures.
 
 ## Packages
 
 | Package | Purpose |
 |---|---|
-| [`@loontail/yggdrasil-core`](./packages/yggdrasil-core)              | Types, Zod schemas, UUID helpers, error registry — shared between server and client. |
-| [`@loontail/strapi-plugin-yggdrasil`](./packages/strapi-plugin-yggdrasil) | Strapi v5 plugin exposing the Yggdrasil protocol endpoints under `/api/yggdrasil/`. |
-| [`@loontail/yggdrasil-client`](./packages/yggdrasil-client)          | HTTP client + bundled `authlib-injector.jar` + `-javaagent` helper, for use in a Minecraft launcher. |
+| [`@loontail/yggdrasil-core`](./packages/yggdrasil-core)              | Protocol types, Zod schemas, UUID helpers, PNG byte-level validation, textures-payload codec, error registry. Pure functions, runtime-agnostic. |
+| [`@loontail/strapi-plugin-yggdrasil`](./packages/strapi-plugin-yggdrasil) | Strapi v5 plugin: Yggdrasil endpoints under `/api/yggdrasil/*`, owns the `yggdrasil_tokens` / `yggdrasil_player_skins` / `yggdrasil_player_capes` tables, ships the admin UI under `/admin/plugins/yggdrasil`. |
+| [`@loontail/yggdrasil-client`](./packages/yggdrasil-client)          | TypeScript HTTP client + bundled `authlib-injector.jar` + `-javaagent` argument builder, for use in a Minecraft launcher. |
 
 ## Topology
 
-- **Source of truth** for users: Strapi `up_users` (the plugin adds a
-  single `uuid` column at bootstrap; no other schema changes).
-- **Skins / capes**: owned by the existing `skins-registry` Strapi
-  plugin. Yggdrasil only reads `up_users.skin` / `up_users.cape`.
-- **Skin variant detection** (classic / slim): runtime via
-  `detectMojangSkinVariant` from `@loontail/minecraft-kit`.
+- **Source of truth for users**: Strapi `up_users` (the plugin adds a
+  single `uuid` column at bootstrap; no other schema changes to the
+  user table).
+- **Skins / capes**: owned by the same Yggdrasil plugin —
+  `yggdrasil_player_skins` and `yggdrasil_player_capes` tables, served
+  from `public/yggdrasil/textures/{skins,capes}/<uuid>-<rev>.png`.
+  Mutations protected by a Yggdrasil access token (`PUT /textures/{skin,cape}`).
+- **Skin variant detection** (classic / slim): stored at upload time
+  and re-detected via `detectMojangSkinVariant` from
+  `@loontail/minecraft-kit` for legacy rows.
 - **authlib-injector**: the Java agent ships inside the
   `@loontail/yggdrasil-client` package as a bundled jar.
 
