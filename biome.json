@@ -6,7 +6,15 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignore": ["dist", "node_modules", ".turbo", "coverage", "vendor"]
+    "ignore": [
+      "dist",
+      "node_modules",
+      ".turbo",
+      "coverage",
+      "vendor",
+      "docs-site/.vitepress/cache",
+      "docs-site/.vitepress/dist"
+    ]
   },
   "formatter": {
     "enabled": true,

@@ -11,3 +11,7 @@ coverage
 # at build time (`npm run fetch-authlib-injector`). The jar ships via npm's
 # `files: ["vendor"]` entry but is not source-controlled.
 packages/yggdrasil-client/vendor/*.jar
+
+# VitePress build artefacts
+docs-site/.vitepress/cache
+docs-site/.vitepress/dist
