@@ -1,4 +1,4 @@
-import { Box, EmptyStateLayout, Main, Typography } from '@strapi/design-system';
+import { Box, EmptyStateLayout, Main } from '@strapi/design-system';
 import { useTranslate } from '../../hooks/useTranslate';
 
 /**
@@ -6,27 +6,17 @@ import { useTranslate } from '../../hooks/useTranslate';
  * navigation scaffold for upcoming session analytics — active sessions,
  * recent join events, per-server activity, etc. Keep the route stable
  * so future iterations don't reshuffle URLs.
+ *
+ * `EmptyStateLayout.content` accepts a plain string only; the previous
+ * version that nested JSX (title + description) compiled under loose
+ * typing but no longer does. Collapse to title-as-content.
  */
 const SessionsPage = () => {
   const translate = useTranslate();
   return (
     <Main>
       <Box padding={10}>
-        <EmptyStateLayout
-          icon={<Box />}
-          content={
-            <Box>
-              <Typography variant="beta" style={{ display: 'block', textAlign: 'center' }}>
-                {translate('sessions.empty.title')}
-              </Typography>
-              <Box paddingTop={2}>
-                <Typography variant="epsilon" textColor="neutral500">
-                  {translate('sessions.empty.description')}
-                </Typography>
-              </Box>
-            </Box>
-          }
-        />
+        <EmptyStateLayout icon={<Box />} content={translate('sessions.empty.title')} />
       </Box>
     </Main>
   );

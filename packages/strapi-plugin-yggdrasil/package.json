@@ -13,24 +13,34 @@
     "directory": "packages/strapi-plugin-yggdrasil"
   },
   "type": "commonjs",
-  "main": "./loader.js",
-  "types": "./dist/server/index.d.ts",
+  "main": "./dist/server/index.js",
+  "module": "./dist/server/index.mjs",
+  "types": "./dist/server/src/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/server/index.d.ts",
-      "require": "./loader.js",
-      "default": "./loader.js"
-    },
     "./package.json": "./package.json",
+    "./strapi-admin": {
+      "source": "./admin/src/index.ts",
+      "types": "./dist/admin/src/index.d.ts",
+      "module": "./dist/admin/index.mjs",
+      "import": "./dist/admin/index.mjs",
+      "require": "./dist/admin/index.js",
+      "default": "./dist/admin/index.js"
+    },
     "./strapi-server": {
-      "types": "./dist/server/index.d.ts",
-      "require": "./loader.js",
-      "default": "./loader.js"
+      "source": "./server/index.ts",
+      "types": "./dist/server/src/index.d.ts",
+      "module": "./dist/server/index.mjs",
+      "import": "./dist/server/index.mjs",
+      "require": "./dist/server/index.js",
+      "default": "./dist/server/index.js"
     }
   },
-  "files": ["dist", "loader.js"],
+  "files": ["dist", "strapi-admin.js", "strapi-server.js"],
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "strapi-plugin build",
+    "watch": "strapi-plugin watch",
+    "watch:link": "strapi-plugin watch:link",
+    "verify": "strapi-plugin verify",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -43,19 +53,33 @@
     "kind": "plugin"
   },
   "dependencies": {
-    "@loontail/yggdrasil-core": "^0.0.4",
     "@loontail/minecraft-kit": "^0.8.9",
+    "@loontail/yggdrasil-core": "^0.0.4",
     "skinview3d": "^3.1.1"
   },
   "peerDependencies": {
+    "@strapi/plugin-users-permissions": "^5.0.0",
     "@strapi/strapi": "^5.0.0",
-    "@strapi/plugin-users-permissions": "^5.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "styled-components": "^6.0.0"
   },
   "devDependencies": {
-    "@strapi/strapi": "^5.44.0",
+    "@strapi/design-system": "^2.0.0",
+    "@strapi/icons": "^2.0.0",
     "@strapi/plugin-users-permissions": "^5.44.0",
+    "@strapi/sdk-plugin": "^6.1.0",
+    "@strapi/strapi": "^5.44.0",
     "@types/koa": "^2.15.0",
     "@types/node": "^22.10.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-intl": "^6.0.0",
+    "react-router-dom": "^6.0.0",
+    "styled-components": "^6.0.0",
     "typescript": "^5.6.3",
     "vitest": "^2.1.8"
   },
